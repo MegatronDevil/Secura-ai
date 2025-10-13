@@ -4,29 +4,29 @@ import { Github, Linkedin, Mail } from "lucide-react";
 export const Team = () => {
   const team = [
     {
-      name: "Team Member 1",
-      role: "AI Research Lead",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=1"
+      name: "Sk Rehan Islam",
+      role: "2nd Year BCA Student",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=male1"
     },
     {
-      name: "Team Member 2",
-      role: "Blockchain Engineer",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=2"
+      name: "Utkarsh Singh",
+      role: "2nd Year Btech CSE AI&ML Student",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=male2"
     },
     {
-      name: "Team Member 3",
-      role: "Security Specialist",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=3"
+      name: "Jatin Pant",
+      role: "2nd Year Btech CSE CS",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=male3"
     },
     {
-      name: "Team Member 4",
-      role: "Full Stack Developer",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=4"
+      name: "Atulya Kumar",
+      role: "2nd Year BCA",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=male4"
     },
     {
-      name: "Team Member 5",
-      role: "UI/UX Designer",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=5"
+      name: "Asdaq Naved",
+      role: "2nd Year Btech CSE",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=male5"
     }
   ];
 

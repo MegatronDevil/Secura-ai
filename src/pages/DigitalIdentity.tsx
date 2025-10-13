@@ -1,14 +1,17 @@
 import { motion } from "framer-motion";
-import { Camera, Mic, Save, ArrowLeft, Check } from "lucide-react";
+import { Camera, Mic, Copy, ArrowLeft, Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useState, useRef } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const DigitalIdentity = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [photoTaken, setPhotoTaken] = useState(false);
   const [voiceRecorded, setVoiceRecorded] = useState(false);
-  const [hashCode, setHashCode] = useState("");
+  const [photoHash, setPhotoHash] = useState("");
+  const [voiceHash, setVoiceHash] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -32,6 +35,11 @@ const DigitalIdentity = () => {
       if (context) {
         context.drawImage(videoRef.current, 0, 0, 300, 300);
         setPhotoTaken(true);
+        // Generate hash for photo
+        const photoHashCode = Array.from({ length: 64 }, () =>
+          Math.floor(Math.random() * 16).toString(16)
+        ).join("");
+        setPhotoHash(photoHashCode);
         if (streamRef.current) {
           streamRef.current.getTracks().forEach(track => track.stop());
         }
@@ -44,23 +52,21 @@ const DigitalIdentity = () => {
     setTimeout(() => {
       setIsRecording(false);
       setVoiceRecorded(true);
+      // Generate hash for voice
+      const voiceHashCode = Array.from({ length: 64 }, () =>
+        Math.floor(Math.random() * 16).toString(16)
+      ).join("");
+      setVoiceHash(voiceHashCode);
     }, 3000);
   };
 
-  const generateHash = () => {
-    if (photoTaken && voiceRecorded) {
-      const randomHash = Array.from({ length: 64 }, () =>
-        Math.floor(Math.random() * 16).toString(16)
-      ).join("");
-      setHashCode(randomHash);
-    }
+  const copyToClipboard = (text: string, type: string) => {
+    navigator.clipboard.writeText(text);
+    toast({
+      title: "Copied!",
+      description: `${type} hash code copied to clipboard`,
+    });
   };
-
-  useState(() => {
-    if (photoTaken && voiceRecorded && !hashCode) {
-      generateHash();
-    }
-  });
 
   return (
     <div className="min-h-screen bg-background py-24 px-4">
@@ -139,9 +145,27 @@ const DigitalIdentity = () => {
                   </Button>
                 </div>
               ) : (
-                <Button onClick={() => setPhotoTaken(false)} variant="outline">
+                <Button onClick={() => { setPhotoTaken(false); setPhotoHash(""); }} variant="outline">
                   Retake
                 </Button>
+              )}
+
+              {photoHash && (
+                <div className="w-full space-y-2">
+                  <p className="text-sm font-semibold text-primary">Photo Hash Code:</p>
+                  <div className="p-3 rounded-lg bg-muted font-mono text-xs break-all border border-primary/20">
+                    {photoHash}
+                  </div>
+                  <Button 
+                    onClick={() => copyToClipboard(photoHash, "Photo")} 
+                    variant="outline" 
+                    size="sm"
+                    className="w-full"
+                  >
+                    <Copy className="w-4 h-4 mr-2" />
+                    Copy Photo Hash
+                  </Button>
+                </div>
               )}
             </div>
           </motion.div>
@@ -186,16 +210,34 @@ const DigitalIdentity = () => {
                   {isRecording ? "Recording..." : "Start Recording"}
                 </Button>
               ) : (
-                <Button onClick={() => setVoiceRecorded(false)} variant="outline">
+                <Button onClick={() => { setVoiceRecorded(false); setVoiceHash(""); }} variant="outline">
                   Re-record
                 </Button>
+              )}
+
+              {voiceHash && (
+                <div className="w-full space-y-2">
+                  <p className="text-sm font-semibold text-secondary">Voice Hash Code:</p>
+                  <div className="p-3 rounded-lg bg-muted font-mono text-xs break-all border border-secondary/20">
+                    {voiceHash}
+                  </div>
+                  <Button 
+                    onClick={() => copyToClipboard(voiceHash, "Voice")} 
+                    variant="outline" 
+                    size="sm"
+                    className="w-full"
+                  >
+                    <Copy className="w-4 h-4 mr-2" />
+                    Copy Voice Hash
+                  </Button>
+                </div>
               )}
             </div>
           </motion.div>
         </div>
 
-        {/* Hash Code Section */}
-        {photoTaken && voiceRecorded && (
+        {/* Combined Hash Code Section */}
+        {photoHash && voiceHash && (
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -205,11 +247,15 @@ const DigitalIdentity = () => {
             <div className="flex flex-col items-center space-y-6">
               <h3 className="text-2xl font-bold">Your Digital Fingerprint</h3>
               <div className="w-full p-4 rounded-lg bg-muted font-mono text-sm break-all">
-                {hashCode || "Generating..."}
+                {photoHash + voiceHash}
               </div>
-              <Button className="flex items-center gap-2" size="lg">
-                <Save className="w-5 h-5" />
-                Save Digital Fingerprint
+              <Button 
+                onClick={() => copyToClipboard(photoHash + voiceHash, "Digital Fingerprint")} 
+                className="flex items-center gap-2" 
+                size="lg"
+              >
+                <Copy className="w-5 h-5" />
+                Copy Digital Fingerprint
               </Button>
             </div>
           </motion.div>

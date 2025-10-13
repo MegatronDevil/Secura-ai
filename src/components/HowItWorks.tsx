@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Fingerprint, Radar, Brain, ShieldCheck, ArrowRight } from "lucide-react";
+import { Fingerprint, Radar, Brain, ShieldCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export const HowItWorks = () => {
@@ -79,19 +79,7 @@ export const HowItWorks = () => {
                   <h3 className="text-2xl font-bold mb-2">{step.title}</h3>
                   <p className="text-muted-foreground">{step.description}</p>
                 </div>
-
-                {/* Arrow (except for last item) */}
-                {index < steps.length - 1 && (
-                  <div className="hidden md:block flex-shrink-0">
-                    <ArrowRight className="w-8 h-8 text-primary/30" />
-                  </div>
-                )}
               </div>
-
-              {/* Connecting Line for mobile */}
-              {index < steps.length - 1 && (
-                <div className="md:hidden w-0.5 h-8 bg-gradient-to-b from-primary/50 to-transparent mx-auto mb-4" />
-              )}
             </motion.div>
           ))}
         </div>
