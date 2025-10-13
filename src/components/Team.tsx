@@ -22,6 +22,11 @@ export const Team = () => {
       name: "Team Member 4",
       role: "Full Stack Developer",
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=4"
+    },
+    {
+      name: "Team Member 5",
+      role: "UI/UX Designer",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=5"
     }
   ];
 
@@ -36,14 +41,14 @@ export const Team = () => {
           className="text-center space-y-4 mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold">
-            Built by Team <span className="gradient-text">Syntax 404</span>
+            Built by Team <span className="gradient-text">Ballerina</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             A passionate group of AI innovators from DBUU dedicated to protecting digital truth
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 max-w-7xl mx-auto">
           {team.map((member, index) => (
             <motion.div
               key={member.name}
