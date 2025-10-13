@@ -30,7 +30,7 @@ export const SecuraBot = () => {
   const botResponses: Record<string, string> = {
     "what is secura.ai?": "Secura.AI is an intelligent cybersecurity framework that predicts and blocks deepfake attacks before they can harm your digital identity.",
     "how does it work?": "By creating your digital fingerprint on blockchain and using AI to monitor suspicious uploads, Secura.AI detects and stops fake or manipulated media before it spreads.",
-    "who built this?": "Secura.AI is built by Team Syntax 404 — a passionate group of AI innovators from DBUU who believe in protecting digital truth.",
+    "who built this?": "Secura.AI is built by Team Ballerina — a passionate group of AI innovators from DBUU who believe in protecting digital truth.",
     "how can it protect me?": "Secura.AI creates a verified digital fingerprint for your content, monitors the web 24/7, and uses AI to predict and block deepfake attacks in real-time."
   };
 

@@ -91,7 +91,7 @@ export const Footer = () => {
         <div className="pt-8 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted-foreground">
-              © 2025 Secura.AI by Team Syntax 404. All rights reserved.
+              © 2025 Secura.AI by Team Ballerina. All rights reserved.
             </p>
             <div className="flex gap-6 text-sm text-muted-foreground">
               <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>

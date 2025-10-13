@@ -6,10 +6,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Shield, LogOut, Fingerprint } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { User, Session } from "@supabase/supabase-js";
+import { DigitalIdentityForm } from "@/components/DigitalIdentityForm";
 
 export default function Dashboard() {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
+  const [showDigitalIdentity, setShowDigitalIdentity] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -70,74 +72,100 @@ export default function Dashboard() {
             <Shield className="h-6 w-6 text-primary" />
             <span className="text-xl font-bold gradient-text">Secura.AI</span>
           </div>
-          <Button variant="outline" onClick={handleLogout}>
-            <LogOut className="mr-2 h-4 w-4" />
-            Logout
-          </Button>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden">
+                <img 
+                  src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.id}`} 
+                  alt="User avatar"
+                  className="w-full h-full"
+                />
+              </div>
+              <div className="hidden md:block">
+                <p className="text-sm font-medium">{user.email?.split('@')[0]}</p>
+                <p className="text-xs text-muted-foreground">{user.email}</p>
+              </div>
+            </div>
+            <Button variant="outline" onClick={handleLogout}>
+              <LogOut className="mr-2 h-4 w-4" />
+              Logout
+            </Button>
+          </div>
         </div>
       </header>
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-12">
-        <div className="max-w-4xl mx-auto space-y-8">
-          <div>
-            <h1 className="text-4xl font-bold mb-2">Welcome back!</h1>
-            <p className="text-muted-foreground">
-              Email: {user.email}
-            </p>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2">
-            {/* Create Digital Identity Card */}
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate("/digital-identity")}>
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <div className="p-3 rounded-full bg-primary/10">
-                    <Fingerprint className="h-6 w-6 text-primary" />
-                  </div>
-                  <div>
-                    <CardTitle>Create Digital Identity</CardTitle>
-                    <CardDescription>
-                      Secure your identity on the blockchain
-                    </CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Capture your biometric data and generate a unique blockchain-verified digital fingerprint.
+        <div className="max-w-6xl mx-auto space-y-8">
+          {!showDigitalIdentity ? (
+            <>
+              <div>
+                <h1 className="text-4xl font-bold mb-2">Welcome back!</h1>
+                <p className="text-muted-foreground">
+                  Email: {user.email}
                 </p>
-                <Button className="w-full">
-                  Get Started
-                </Button>
-              </CardContent>
-            </Card>
+              </div>
 
-            {/* Try Demo Card */}
-            <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate("/try-demo")}>
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <div className="p-3 rounded-full bg-primary/10">
-                    <Shield className="h-6 w-6 text-primary" />
-                  </div>
-                  <div>
-                    <CardTitle>Deepfake Detection</CardTitle>
-                    <CardDescription>
-                      Analyze media for authenticity
-                    </CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Upload images, videos, or links to detect potential deepfakes using our AI.
-                </p>
-                <Button className="w-full">
-                  Try Demo
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+              <div className="grid gap-6 md:grid-cols-2">
+                {/* Create Digital Identity Card */}
+                <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setShowDigitalIdentity(true)}>
+                  <CardHeader>
+                    <div className="flex items-center gap-3">
+                      <div className="p-3 rounded-full bg-primary/10">
+                        <Fingerprint className="h-6 w-6 text-primary" />
+                      </div>
+                      <div>
+                        <CardTitle>Create Digital Identity</CardTitle>
+                        <CardDescription>
+                          Secure your identity on the blockchain
+                        </CardDescription>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Capture your biometric data and generate a unique blockchain-verified digital fingerprint.
+                    </p>
+                    <Button className="w-full">
+                      Get Started
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                {/* Try Demo Card */}
+                <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate("/try-demo")}>
+                  <CardHeader>
+                    <div className="flex items-center gap-3">
+                      <div className="p-3 rounded-full bg-primary/10">
+                        <Shield className="h-6 w-6 text-primary" />
+                      </div>
+                      <div>
+                        <CardTitle>Deepfake Detection</CardTitle>
+                        <CardDescription>
+                          Analyze media for authenticity
+                        </CardDescription>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Upload images, videos, or links to detect potential deepfakes using our AI.
+                    </p>
+                    <Button className="w-full">
+                      Try Demo
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+            </>
+          ) : (
+            <div className="space-y-6">
+              <Button variant="ghost" onClick={() => setShowDigitalIdentity(false)}>
+                ← Back to Dashboard
+              </Button>
+              <DigitalIdentityForm />
+            </div>
+          )}
         </div>
       </main>
     </div>
