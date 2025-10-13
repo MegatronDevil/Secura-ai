@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Shield, Sparkles } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import heroBg from "@/assets/hero-bg.jpg";
+import { AuthDialog } from "@/components/AuthDialog";
 
 export const Hero = () => {
-  const navigate = useNavigate();
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
 
   const scrollToAbout = () => {
     const aboutSection = document.getElementById('about');
@@ -77,10 +78,10 @@ export const Hero = () => {
             <Button 
               size="lg" 
               className="group bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-8 py-6 text-lg rounded-full shadow-[0_0_30px_hsl(var(--primary)/0.5)] hover:shadow-[0_0_40px_hsl(var(--primary)/0.7)] transition-all duration-300"
-              onClick={() => navigate('/try-demo')}
+              onClick={() => setAuthDialogOpen(true)}
             >
               <Shield className="mr-2 h-5 w-5 group-hover:rotate-12 transition-transform" />
-              Try Demo
+              Try Now
             </Button>
             <Button 
               size="lg" 
@@ -112,6 +113,9 @@ export const Hero = () => {
 
       {/* Grid Overlay */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--border))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border))_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-5" />
+      
+      {/* Auth Dialog */}
+      <AuthDialog open={authDialogOpen} onOpenChange={setAuthDialogOpen} />
     </section>
   );
 };
