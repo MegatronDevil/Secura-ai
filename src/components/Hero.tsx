@@ -1,9 +1,19 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Shield, Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import heroBg from "@/assets/hero-bg.jpg";
 
 export const Hero = () => {
+  const navigate = useNavigate();
+
+  const scrollToAbout = () => {
+    const aboutSection = document.getElementById('about');
+    if (aboutSection) {
+      aboutSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Animated Background */}
@@ -67,6 +77,7 @@ export const Hero = () => {
             <Button 
               size="lg" 
               className="group bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-8 py-6 text-lg rounded-full shadow-[0_0_30px_hsl(var(--primary)/0.5)] hover:shadow-[0_0_40px_hsl(var(--primary)/0.7)] transition-all duration-300"
+              onClick={() => navigate('/try-demo')}
             >
               <Shield className="mr-2 h-5 w-5 group-hover:rotate-12 transition-transform" />
               Try Demo
@@ -75,6 +86,7 @@ export const Hero = () => {
               size="lg" 
               variant="outline"
               className="border-primary/50 text-foreground hover:bg-primary/10 hover:border-primary font-semibold px-8 py-6 text-lg rounded-full backdrop-blur-sm transition-all duration-300"
+              onClick={scrollToAbout}
             >
               Learn More
             </Button>

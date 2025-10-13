@@ -1,7 +1,10 @@
 import { motion } from "framer-motion";
 import { Fingerprint, Radar, Brain, ShieldCheck, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export const HowItWorks = () => {
+  const navigate = useNavigate();
+  
   const steps = [
     {
       icon: Fingerprint,
@@ -59,7 +62,10 @@ export const HowItWorks = () => {
             >
               <div className="flex flex-col md:flex-row items-center gap-8 mb-12">
                 {/* Step Number & Icon */}
-                <div className="flex-shrink-0 relative">
+                <div 
+                  className="flex-shrink-0 relative cursor-pointer"
+                  onClick={() => index === 0 && navigate('/digital-identity')}
+                >
                   <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 border border-primary/30 flex items-center justify-center group hover:shadow-[0_0_40px_hsl(var(--primary)/0.4)] transition-all duration-300">
                     <step.icon className="w-10 h-10 text-primary" />
                   </div>
