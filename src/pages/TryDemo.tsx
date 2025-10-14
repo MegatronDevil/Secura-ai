@@ -1,15 +1,21 @@
 import { motion } from "framer-motion";
-import { Upload, Image, Video, Link, ArrowLeft } from "lucide-react";
+import { Upload, Image, Video, Link, ArrowLeft, AlertCircle, CheckCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const TryDemo = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [linkUrl, setLinkUrl] = useState("");
+  const [imageResult, setImageResult] = useState<any>(null);
+  const [videoResult, setVideoResult] = useState<any>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -20,6 +26,41 @@ const TryDemo = () => {
   const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setVideoFile(e.target.files[0]);
+    }
+  };
+
+  const analyzeFile = async (file: File, type: 'image' | 'video') => {
+    setIsAnalyzing(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const { data, error } = await supabase.functions.invoke('analyze-deepfake', {
+        body: formData,
+      });
+
+      if (error) throw error;
+
+      if (type === 'image') {
+        setImageResult(data);
+      } else {
+        setVideoResult(data);
+      }
+
+      toast({
+        title: data.isDeepfake ? "AI-Generated Content Detected!" : "Analysis Complete",
+        description: data.message,
+        variant: data.isDeepfake ? "destructive" : "default",
+      });
+    } catch (error) {
+      console.error('Error analyzing file:', error);
+      toast({
+        title: "Analysis Failed",
+        description: "There was an error analyzing the file.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsAnalyzing(false);
     }
   };
 
@@ -82,7 +123,41 @@ const TryDemo = () => {
                   className="hidden"
                 />
               </div>
-              <Button className="w-full">Analyze Image</Button>
+              <Button 
+                className="w-full" 
+                onClick={() => imageFile && analyzeFile(imageFile, 'image')}
+                disabled={!imageFile || isAnalyzing}
+              >
+                {isAnalyzing ? 'Analyzing...' : 'Analyze Image'}
+              </Button>
+              {imageResult && (
+                <div className={`w-full p-4 rounded-lg border ${
+                  imageResult.isDeepfake 
+                    ? 'bg-destructive/10 border-destructive/50' 
+                    : 'bg-green-500/10 border-green-500/50'
+                }`}>
+                  <div className="flex items-start gap-3">
+                    {imageResult.isDeepfake ? (
+                      <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
+                    ) : (
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                    )}
+                    <div className="flex-1">
+                      <p className={`font-semibold ${
+                        imageResult.isDeepfake ? 'text-destructive' : 'text-green-500'
+                      }`}>
+                        {imageResult.isDeepfake ? 'AI-Generated Detected' : 'No AI Markers Found'}
+                      </p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {imageResult.message}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        Confidence: {imageResult.confidence}%
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </motion.div>
 
@@ -118,7 +193,41 @@ const TryDemo = () => {
                   className="hidden"
                 />
               </div>
-              <Button className="w-full">Analyze Video</Button>
+              <Button 
+                className="w-full"
+                onClick={() => videoFile && analyzeFile(videoFile, 'video')}
+                disabled={!videoFile || isAnalyzing}
+              >
+                {isAnalyzing ? 'Analyzing...' : 'Analyze Video'}
+              </Button>
+              {videoResult && (
+                <div className={`w-full p-4 rounded-lg border ${
+                  videoResult.isDeepfake 
+                    ? 'bg-destructive/10 border-destructive/50' 
+                    : 'bg-green-500/10 border-green-500/50'
+                }`}>
+                  <div className="flex items-start gap-3">
+                    {videoResult.isDeepfake ? (
+                      <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
+                    ) : (
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                    )}
+                    <div className="flex-1">
+                      <p className={`font-semibold ${
+                        videoResult.isDeepfake ? 'text-destructive' : 'text-green-500'
+                      }`}>
+                        {videoResult.isDeepfake ? 'AI-Generated Detected' : 'No AI Markers Found'}
+                      </p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {videoResult.message}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        Confidence: {videoResult.confidence}%
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </motion.div>
 
