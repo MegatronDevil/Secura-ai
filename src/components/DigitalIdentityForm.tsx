@@ -96,20 +96,17 @@ export const DigitalIdentityForm = () => {
             
             <div className="relative">
               <div className="w-[300px] h-[300px] rounded-full overflow-hidden border-4 border-primary/30 bg-muted">
-                {!photoTaken ? (
-                  <video
-                    ref={videoRef}
-                    autoPlay
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <canvas
-                    ref={canvasRef}
-                    width={300}
-                    height={300}
-                    className="w-full h-full"
-                  />
-                )}
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  className={`w-full h-full object-cover ${photoTaken ? 'hidden' : ''}`}
+                />
+                <canvas
+                  ref={canvasRef}
+                  width={300}
+                  height={300}
+                  className={`w-full h-full ${!photoTaken ? 'hidden' : ''}`}
+                />
               </div>
               {photoTaken && (
                 <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-primary flex items-center justify-center">

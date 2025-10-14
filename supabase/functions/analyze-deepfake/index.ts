@@ -25,8 +25,11 @@ serve(async (req) => {
     const filename = file.name.toLowerCase();
     console.log('Analyzing file:', filename);
 
-    // Check if filename contains -ai.jpeg or -ai.jpg
-    const isAIGenerated = filename.includes('-ai.jpeg') || filename.includes('-ai.jpg');
+    // Check if filename contains AI generation markers
+    const isAIGenerated = filename.includes('-ai.jpeg') || 
+                         filename.includes('-ai.jpg') || 
+                         filename.includes('-ai.mp4') || 
+                         filename.includes('-ai.mov');
 
     const result = {
       filename: file.name,
