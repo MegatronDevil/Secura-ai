@@ -15,7 +15,7 @@ export const Team = () => {
     },
     {
       name: "Gunjan Chakraborty",
-      role: "2nd Year BCA",
+      role: "2nd Year Btech CSE CS",
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=male4"
     }
   ];
