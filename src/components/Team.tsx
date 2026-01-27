@@ -22,11 +22,6 @@ export const Team = () => {
       name: "Atulya Kumar",
       role: "2nd Year BCA",
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=male4"
-    },
-    {
-      name: "Asdaq Naved",
-      role: "2nd Year Btech CSE",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=male5"
     }
   ];
 
