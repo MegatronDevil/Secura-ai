@@ -7,6 +7,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { ImageAnalysisResult } from "@/components/ImageAnalysisResult";
+import { compressImage, blobToFile } from "@/utils/imageUtils";
 
 interface AnalysisResult {
   filename: string;
@@ -60,8 +61,19 @@ const TryDemo = () => {
     setImageResult(null);
     
     try {
+      // Compress image to avoid memory limits (512px max, 0.7 quality)
+      toast({
+        title: "Processing Image",
+        description: "Compressing and preparing for analysis...",
+      });
+      
+      const compressedBlob = await compressImage(imageFile, 512, 0.7);
+      const compressedFile = blobToFile(compressedBlob, imageFile.name);
+      
+      console.log(`Original size: ${(imageFile.size / 1024).toFixed(2)}KB, Compressed: ${(compressedFile.size / 1024).toFixed(2)}KB`);
+      
       const formData = new FormData();
-      formData.append('file', imageFile);
+      formData.append('file', compressedFile);
 
       const { data, error } = await supabase.functions.invoke('analyze-deepfake', {
         body: formData,
