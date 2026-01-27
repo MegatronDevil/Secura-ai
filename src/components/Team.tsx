@@ -4,6 +4,11 @@ import { Github, Linkedin, Mail } from "lucide-react";
 export const Team = () => {
   const team = [
     {
+      name: "Sk Rehan Islam",
+      role: "2nd Year BCA Student",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=male1"
+    },
+    {
       name: "Utkarsh Singh",
       role: "2nd Year Btech CSE AI&ML Student",
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=male2"
@@ -14,9 +19,14 @@ export const Team = () => {
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=male3"
     },
     {
-      name: "Gunjan Chakraborty",
-      role: "2nd Year Btech CSE CS",
+      name: "Atulya Kumar",
+      role: "2nd Year BCA",
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=male4"
+    },
+    {
+      name: "Asdaq Naved",
+      role: "2nd Year Btech CSE",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=male5"
     }
   ];
 
@@ -38,7 +48,7 @@ export const Team = () => {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 max-w-7xl mx-auto">
           {team.map((member, index) => (
             <motion.div
               key={member.name}
