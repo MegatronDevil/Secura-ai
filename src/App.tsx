@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound";
 import TryDemo from "./pages/TryDemo";
 import DigitalIdentity from "./pages/DigitalIdentity";
 import Dashboard from "./pages/Dashboard";
+import ImpersonationGuard from "./pages/ImpersonationGuard";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/try-demo" element={<TryDemo />} />
           <Route path="/digital-identity" element={<DigitalIdentity />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/impersonation-guard" element={<ImpersonationGuard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield, LogOut, Fingerprint } from "lucide-react";
+import { Shield, LogOut, Fingerprint, ShieldAlert, FlaskConical } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { User, Session } from "@supabase/supabase-js";
 import { DigitalIdentityForm } from "@/components/DigitalIdentityForm";
@@ -106,7 +106,7 @@ export default function Dashboard() {
                 </p>
               </div>
 
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {/* Create Digital Identity Card */}
                 <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setShowDigitalIdentity(true)}>
                   <CardHeader>
@@ -132,17 +132,17 @@ export default function Dashboard() {
                   </CardContent>
                 </Card>
 
-                {/* Try Demo Card */}
+                {/* AI Forensics Lab Card */}
                 <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate("/try-demo")}>
                   <CardHeader>
                     <div className="flex items-center gap-3">
-                      <div className="p-3 rounded-full bg-primary/10">
-                        <Shield className="h-6 w-6 text-primary" />
+                      <div className="p-3 rounded-full bg-secondary/10">
+                        <FlaskConical className="h-6 w-6 text-secondary" />
                       </div>
                       <div>
-                        <CardTitle>Deepfake Detection</CardTitle>
+                        <CardTitle>AI Forensics Lab</CardTitle>
                         <CardDescription>
-                          Analyze media for authenticity
+                          Analyze media for deepfakes
                         </CardDescription>
                       </div>
                     </div>
@@ -151,7 +151,32 @@ export default function Dashboard() {
                     <p className="text-sm text-muted-foreground mb-4">
                       Upload images, videos, or links to detect potential deepfakes using our AI.
                     </p>
-                    <Button className="w-full">
+                    <Button className="w-full" variant="secondary">
+                      Try Demo
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                {/* Impersonation Protection Card */}
+                <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate("/impersonation-guard")}>
+                  <CardHeader>
+                    <div className="flex items-center gap-3">
+                      <div className="p-3 rounded-full bg-accent/10">
+                        <ShieldAlert className="h-6 w-6 text-accent" />
+                      </div>
+                      <div>
+                        <CardTitle>Impersonation Protection</CardTitle>
+                        <CardDescription>
+                          Prevent fake accounts from uploading deepfakes
+                        </CardDescription>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      See how Secura.AI protects identities on social media platforms.
+                    </p>
+                    <Button className="w-full" variant="outline">
                       Try Demo
                     </Button>
                   </CardContent>
