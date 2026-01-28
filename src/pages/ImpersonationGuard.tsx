@@ -15,10 +15,19 @@ interface InstagramUser {
   isVerified: boolean;
 }
 
+interface Post {
+  id: string;
+  imageUrl: string;
+  caption: string;
+  likes: number;
+  timestamp: Date;
+}
+
 export default function ImpersonationGuard() {
   const [authUser, setAuthUser] = useState<User | null>(null);
   const [view, setView] = useState<InstagramView>("login");
   const [instagramUser, setInstagramUser] = useState<InstagramUser | null>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
   
   // Modal states
   const [showBlockedModal, setShowBlockedModal] = useState(false);
@@ -50,6 +59,7 @@ export default function ImpersonationGuard() {
 
   const handleLogout = () => {
     setInstagramUser(null);
+    setPosts([]);
     setView("login");
   };
 
@@ -63,7 +73,18 @@ export default function ImpersonationGuard() {
     setShowBlockedModal(true);
   };
 
-  const handlePostSuccess = () => {
+  const handlePostSuccess = (imageUrl?: string, caption?: string) => {
+    // Add the post to the posts array
+    if (imageUrl) {
+      const newPost: Post = {
+        id: Date.now().toString(),
+        imageUrl,
+        caption: caption || "",
+        likes: Math.floor(Math.random() * 100) + 1,
+        timestamp: new Date(),
+      };
+      setPosts([newPost, ...posts]);
+    }
     setShowSuccessModal(true);
   };
 
@@ -103,6 +124,7 @@ export default function ImpersonationGuard() {
           onCreatePost={() => setView("create")}
           onLogout={handleLogout}
           onExitDemo={handleExitDemo}
+          posts={posts}
         />
       )}
 
