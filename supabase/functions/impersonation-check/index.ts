@@ -29,17 +29,19 @@ serve(async (req) => {
     console.log('Claimed identity:', claimedIdentityName);
 
     // FILENAME-BASED DETECTION LOGIC:
-    // - ALL UPPERCASE filename (excluding extension) = FAKE (AI Generated / Impersonation)
-    // - lowercase or mixed case = REAL (Original/Authentic)
-    const isAllUppercase = filenameWithoutExt === filenameWithoutExt.toUpperCase() && 
-                           filenameWithoutExt !== filenameWithoutExt.toLowerCase();
+    // - Mixed case (has both uppercase AND lowercase letters) = REAL (Original/Authentic)
+    // - Pure lowercase (possibly with numbers) = FAKE (AI Generated / Impersonation)
+    const hasUppercase = /[A-Z]/.test(filenameWithoutExt);
+    const hasLowercase = /[a-z]/.test(filenameWithoutExt);
+    const isMixedCase = hasUppercase && hasLowercase;
+    const isFake = !isMixedCase; // Pure lowercase or pure uppercase = FAKE
     
-    console.log('Is all uppercase:', isAllUppercase, '- Will be marked as:', isAllUppercase ? 'FAKE' : 'REAL');
+    console.log('Has uppercase:', hasUppercase, 'Has lowercase:', hasLowercase, 'Mixed case:', isMixedCase, 'Is Fake:', isFake);
 
     const result = {
-      result: isAllUppercase ? "FAKE" : "REAL",
-      confidence: isAllUppercase ? 96 : 4,
-      reason: isAllUppercase 
+      result: isFake ? "FAKE" : "REAL",
+      confidence: isFake ? 96 : 4,
+      reason: isFake 
         ? "AI-generated content detected. Multiple deepfake artifacts and manipulation signatures identified. This content violates platform authenticity guidelines."
         : "Content verified as authentic. No AI generation or manipulation markers detected.",
     };
