@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Image, Upload, Loader2 } from "lucide-react";
+import { ArrowLeft, Image, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { compressImage, blobToFile } from "@/utils/imageUtils";
 import { useToast } from "@/hooks/use-toast";
@@ -10,7 +10,7 @@ interface InstagramCreatePostProps {
   username: string;
   isVerified: boolean;
   onBack: () => void;
-  onSuccess: () => void;
+  onSuccess: (imageUrl?: string, caption?: string) => void;
   onBlocked: (confidence: number, reason: string) => void;
 }
 
@@ -71,7 +71,8 @@ export default function InstagramCreatePost({
       if (data.result === "FAKE") {
         onBlocked(data.confidence, data.reason);
       } else {
-        onSuccess();
+        // Pass the image preview and caption to show the post
+        onSuccess(imagePreview, caption);
       }
     } catch (error) {
       console.error("Analysis error:", error);
@@ -132,6 +133,12 @@ export default function InstagramCreatePost({
                 </Button>
               </div>
               <p className="text-xs text-gray-500">JPG, PNG, WEBP</p>
+              <div className="mt-4 p-3 bg-amber-50 rounded-lg border border-amber-200">
+                <p className="text-xs text-amber-800">
+                  <strong>Demo tip:</strong> Upload files with <strong>lowercase</strong> names to pass verification, 
+                  or <strong>UPPERCASE</strong> names to see them blocked as AI-detected.
+                </p>
+              </div>
             </div>
           </div>
         ) : (
@@ -152,6 +159,11 @@ export default function InstagramCreatePost({
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
+            {selectedImage && (
+              <div className="absolute bottom-4 left-4 right-4 bg-black/60 text-white p-2 rounded text-xs">
+                File: {selectedImage.name}
+              </div>
+            )}
           </div>
         )}
 
