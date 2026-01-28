@@ -27,14 +27,12 @@ serve(async (req) => {
     console.log('Analyzing file:', filename, 'Name without ext:', filenameWithoutExt);
 
     // FILENAME-BASED DETECTION LOGIC:
-    // - Mixed case (has both uppercase AND lowercase letters) = Original/Authentic
-    // - Pure lowercase (possibly with numbers) = AI Generated/Deepfake
-    const hasUppercase = /[A-Z]/.test(filenameWithoutExt);
-    const hasLowercase = /[a-z]/.test(filenameWithoutExt);
-    const isMixedCase = hasUppercase && hasLowercase;
-    const isAIGenerated = !isMixedCase; // Pure lowercase or pure uppercase = AI
+    // - Pure lowercase letters only (a-z) = AI Generated/Deepfake
+    // - Anything with numbers, symbols, or uppercase = Original/Authentic
+    const isPureLowercase = /^[a-z]+$/.test(filenameWithoutExt);
+    const isAIGenerated = isPureLowercase;
     
-    console.log('Has uppercase:', hasUppercase, 'Has lowercase:', hasLowercase, 'Mixed case:', isMixedCase, 'AI Generated:', isAIGenerated);
+    console.log('Filename without ext:', filenameWithoutExt, 'Is pure lowercase:', isPureLowercase, 'AI Generated:', isAIGenerated);
 
     const fileType = file.type;
     const isVideo = fileType.startsWith('video/') || 

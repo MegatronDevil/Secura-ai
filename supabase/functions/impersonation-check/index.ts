@@ -29,14 +29,12 @@ serve(async (req) => {
     console.log('Claimed identity:', claimedIdentityName);
 
     // FILENAME-BASED DETECTION LOGIC:
-    // - Mixed case (has both uppercase AND lowercase letters) = REAL (Original/Authentic)
-    // - Pure lowercase (possibly with numbers) = FAKE (AI Generated / Impersonation)
-    const hasUppercase = /[A-Z]/.test(filenameWithoutExt);
-    const hasLowercase = /[a-z]/.test(filenameWithoutExt);
-    const isMixedCase = hasUppercase && hasLowercase;
-    const isFake = !isMixedCase; // Pure lowercase or pure uppercase = FAKE
+    // - Pure lowercase letters only (a-z) = FAKE (AI Generated / Impersonation)
+    // - Anything with numbers, symbols, or uppercase = REAL (Original/Authentic)
+    const isPureLowercase = /^[a-z]+$/.test(filenameWithoutExt);
+    const isFake = isPureLowercase;
     
-    console.log('Has uppercase:', hasUppercase, 'Has lowercase:', hasLowercase, 'Mixed case:', isMixedCase, 'Is Fake:', isFake);
+    console.log('Filename without ext:', filenameWithoutExt, 'Is pure lowercase:', isPureLowercase, 'Is Fake:', isFake);
 
     const result = {
       result: isFake ? "FAKE" : "REAL",
