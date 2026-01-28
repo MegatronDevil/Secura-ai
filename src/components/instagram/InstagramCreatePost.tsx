@@ -133,12 +133,6 @@ export default function InstagramCreatePost({
                 </Button>
               </div>
               <p className="text-xs text-gray-500">JPG, PNG, WEBP</p>
-              <div className="mt-4 p-3 bg-amber-50 rounded-lg border border-amber-200">
-                <p className="text-xs text-amber-800">
-                  <strong>Demo tip:</strong> Upload files with <strong>lowercase</strong> names to pass verification, 
-                  or <strong>UPPERCASE</strong> names to see them blocked as AI-detected.
-                </p>
-              </div>
             </div>
           </div>
         ) : (

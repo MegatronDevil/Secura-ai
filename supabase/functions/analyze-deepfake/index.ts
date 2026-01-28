@@ -27,12 +27,14 @@ serve(async (req) => {
     console.log('Analyzing file:', filename, 'Name without ext:', filenameWithoutExt);
 
     // FILENAME-BASED DETECTION LOGIC:
-    // - ALL UPPERCASE filename (excluding extension) = AI Generated
-    // - lowercase or mixed case = Original/Authentic
-    const isAllUppercase = filenameWithoutExt === filenameWithoutExt.toUpperCase() && 
-                           filenameWithoutExt !== filenameWithoutExt.toLowerCase();
+    // - Mixed case (has both uppercase AND lowercase letters) = Original/Authentic
+    // - Pure lowercase (possibly with numbers) = AI Generated/Deepfake
+    const hasUppercase = /[A-Z]/.test(filenameWithoutExt);
+    const hasLowercase = /[a-z]/.test(filenameWithoutExt);
+    const isMixedCase = hasUppercase && hasLowercase;
+    const isAIGenerated = !isMixedCase; // Pure lowercase or pure uppercase = AI
     
-    console.log('Is all uppercase:', isAllUppercase);
+    console.log('Has uppercase:', hasUppercase, 'Has lowercase:', hasLowercase, 'Mixed case:', isMixedCase, 'AI Generated:', isAIGenerated);
 
     const fileType = file.type;
     const isVideo = fileType.startsWith('video/') || 
@@ -44,17 +46,17 @@ serve(async (req) => {
     if (isVideo) {
       const result = {
         filename: file.name,
-        isDeepfake: isAllUppercase,
-        message: isAllUppercase 
+        isDeepfake: isAIGenerated,
+        message: isAIGenerated 
           ? 'This video has been identified as AI-generated or manipulated.'
           : 'No AI generation markers detected in this video.',
-        confidence: isAllUppercase ? 95 : 5,
-        label: isAllUppercase ? 'AI Generated' : 'Likely Original',
+        confidence: isAIGenerated ? 95 : 5,
+        label: isAIGenerated ? 'AI Generated' : 'Likely Original',
         analysisType: 'video',
-        details: isAllUppercase 
+        details: isAIGenerated 
           ? 'Temporal inconsistencies, frame artifacts, and AI generation signatures detected through forensic analysis.'
           : 'Video appears to be authentic based on comprehensive forensic analysis.',
-        artifacts: isAllUppercase 
+        artifacts: isAIGenerated 
           ? ['Temporal inconsistencies', 'Frame interpolation artifacts', 'AI generation patterns'] 
           : [],
       };
@@ -68,16 +70,16 @@ serve(async (req) => {
     // For images - use filename-based detection
     const result = {
       filename: file.name,
-      isDeepfake: isAllUppercase,
-      message: isAllUppercase 
+      isDeepfake: isAIGenerated,
+      message: isAIGenerated 
         ? 'This image shows characteristics of AI generation.'
         : 'This image appears to be an authentic photograph.',
-      confidence: isAllUppercase ? 94 : 8,
-      label: isAllUppercase ? 'AI Generated' : 'Likely Original',
-      details: isAllUppercase 
+      confidence: isAIGenerated ? 94 : 8,
+      label: isAIGenerated ? 'AI Generated' : 'Likely Original',
+      details: isAIGenerated 
         ? 'Forensic analysis detected multiple AI generation artifacts including unnatural texture patterns, lighting inconsistencies, and diffusion model signatures characteristic of synthetic imagery.'
         : 'Comprehensive forensic analysis found no evidence of AI generation or manipulation. Natural camera noise patterns, consistent lighting, and authentic texture details confirm image authenticity.',
-      artifacts: isAllUppercase 
+      artifacts: isAIGenerated 
         ? ['Unnatural skin smoothness', 'GAN/Diffusion artifacts', 'Inconsistent lighting patterns', 'Edge anomalies'] 
         : [],
       analysisType: 'image-forensics',
