@@ -14,16 +14,133 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      classification_reports: {
+        Row: {
+          admin_notes: string | null
+          analysis_log_id: string
+          created_at: string
+          expected_classification: Database["public"]["Enums"]["image_classification"]
+          id: string
+          reason: string
+          reporter_user_id: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["report_status"]
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          analysis_log_id: string
+          created_at?: string
+          expected_classification: Database["public"]["Enums"]["image_classification"]
+          id?: string
+          reason: string
+          reporter_user_id?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["report_status"]
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          analysis_log_id?: string
+          created_at?: string
+          expected_classification?: Database["public"]["Enums"]["image_classification"]
+          id?: string
+          reason?: string
+          reporter_user_id?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["report_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "classification_reports_analysis_log_id_fkey"
+            columns: ["analysis_log_id"]
+            isOneToOne: false
+            referencedRelation: "image_analysis_logs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      image_analysis_logs: {
+        Row: {
+          analysis_context: string
+          artifacts: string[] | null
+          classification: Database["public"]["Enums"]["image_classification"]
+          confidence: number
+          created_at: string
+          explanation: string
+          filename: string
+          id: string
+          image_hash: string | null
+          user_id: string | null
+        }
+        Insert: {
+          analysis_context: string
+          artifacts?: string[] | null
+          classification: Database["public"]["Enums"]["image_classification"]
+          confidence: number
+          created_at?: string
+          explanation: string
+          filename: string
+          id?: string
+          image_hash?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          analysis_context?: string
+          artifacts?: string[] | null
+          classification?: Database["public"]["Enums"]["image_classification"]
+          confidence?: number
+          created_at?: string
+          explanation?: string
+          filename?: string
+          id?: string
+          image_hash?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "user"
+      image_classification: "real" | "ai_safe" | "deepfake"
+      report_status: "pending" | "reviewed" | "resolved" | "dismissed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +267,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "user"],
+      image_classification: ["real", "ai_safe", "deepfake"],
+      report_status: ["pending", "reviewed", "resolved", "dismissed"],
+    },
   },
 } as const

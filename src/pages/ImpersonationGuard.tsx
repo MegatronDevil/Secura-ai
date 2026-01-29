@@ -21,6 +21,7 @@ interface Post {
   caption: string;
   likes: number;
   timestamp: Date;
+  isAISafe?: boolean;
 }
 
 export default function ImpersonationGuard() {
@@ -34,6 +35,7 @@ export default function ImpersonationGuard() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [blockedReason, setBlockedReason] = useState("");
   const [blockedConfidence, setBlockedConfidence] = useState(0);
+  const [successIsAISafe, setSuccessIsAISafe] = useState(false);
 
   const navigate = useNavigate();
 
@@ -73,7 +75,7 @@ export default function ImpersonationGuard() {
     setShowBlockedModal(true);
   };
 
-  const handlePostSuccess = (imageUrl?: string, caption?: string) => {
+  const handlePostSuccess = (imageUrl?: string, caption?: string, isAISafe?: boolean) => {
     // Add the post to the posts array
     if (imageUrl) {
       const newPost: Post = {
@@ -82,9 +84,11 @@ export default function ImpersonationGuard() {
         caption: caption || "",
         likes: Math.floor(Math.random() * 100) + 1,
         timestamp: new Date(),
+        isAISafe: isAISafe || false,
       };
       setPosts([newPost, ...posts]);
     }
+    setSuccessIsAISafe(isAISafe || false);
     setShowSuccessModal(true);
   };
 
@@ -149,6 +153,7 @@ export default function ImpersonationGuard() {
       <InstagramSuccessModal
         open={showSuccessModal}
         onClose={handleCloseSuccessModal}
+        isAISafe={successIsAISafe}
       />
     </>
   );
