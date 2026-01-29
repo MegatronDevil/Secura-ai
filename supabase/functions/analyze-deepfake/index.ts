@@ -115,7 +115,17 @@ Look for ANY of these AI indicators - even ONE is enough to classify as AI-gener
 
 IMPORTANT: Modern AI images often look "better than real" - too perfect, too smooth, too polished. Real photos have imperfections, noise, and inconsistencies. If an image looks "too good" or "enhanced," it likely IS enhanced.
 
-=== STAGE 2: IDENTITY & RISK ASSESSMENT ===
+=== STAGE 2: NUDITY & EXPLICIT CONTENT DETECTION (CRITICAL) ===
+Scan the image for ANY form of nudity or sexually explicit content:
+- FULL NUDITY: Exposed genitalia, breasts (female), buttocks
+- PARTIAL NUDITY: Revealing underwear, lingerie, see-through clothing
+- SEXUAL POSES: Provocative positioning, suggestive body language
+- INTIMATE CONTEXTS: Bedroom scenes, bath/shower scenes with exposed skin
+- SEXUALIZED CONTENT: Even if clothed, overtly sexual or suggestive imagery
+
+CRITICAL RULE: If AI-generated content contains ANY nudity or sexual content, it MUST be classified as "deepfake" (BLOCKED), NOT "ai_safe".
+
+=== STAGE 3: IDENTITY & RISK ASSESSMENT ===
 If AI generation is detected OR even suspected:
 - Does the image depict an identifiable human face or body?
 - Could this be used for identity impersonation or catfishing?
@@ -123,8 +133,8 @@ If AI generation is detected OR even suspected:
 - Could viewers be misled about a real person?
 - Is the subject in a potentially non-consensual context?
 
-=== STAGE 3: CONSERVATIVE CLASSIFICATION ===
-Apply these rules STRICTLY - err on the side of DETECTING AI:
+=== STAGE 4: CONSERVATIVE CLASSIFICATION ===
+Apply these rules STRICTLY - err on the side of SAFETY:
 
 "real" - ONLY for clearly authentic photographs with:
   - Visible camera sensor noise and compression artifacts
@@ -132,30 +142,37 @@ Apply these rules STRICTLY - err on the side of DETECTING AI:
   - Imperfect lighting with natural shadows
   - Slight blur, grain, or other photographic "flaws"
   - DO NOT classify as "real" if the image looks "too perfect" or heavily edited
+  - Note: Real photos with nudity should still be flagged for content policy
 
-"ai_safe" - DEFAULT for any detected AI generation:
-  - Any smooth, polished, or "enhanced" appearance
-  - Stylized or artistic portraits
-  - Beauty filters or heavy enhancement
-  - Any uncertainty about whether content is AI-generated
-  - WHEN IN DOUBT, CLASSIFY HERE - better to label AI content than miss it
+"ai_safe" - For AI-generated content that is SAFE:
+  - AI-generated BUT contains NO nudity, NO sexual content
+  - Stylized or artistic portraits (clothed, appropriate)
+  - Beauty filters or heavy enhancement (non-sexual)
+  - Creative/artistic content with no explicit material
+  - REQUIREMENT: Must be completely free of nudity/sexual content
 
-"deepfake" - For harmful AI content:
+"deepfake" - BLOCK for harmful AI content (MANDATORY for these cases):
+  - ANY AI-generated image containing nudity (even partial)
+  - ANY AI-generated image with sexual or provocative content
   - Face swapping or identity manipulation
   - Photorealistic AI in misleading/sexualized/defamatory context
   - Content that could deceive about identity
-  - High uncertainty about potential identity harm
+  - Non-consensual intimate imagery (real or AI)
 
-CRITICAL DEFAULT: When uncertain between "real" and "ai_safe", ALWAYS choose "ai_safe". Missing AI content is worse than over-labeling.
+CRITICAL RULES:
+1. AI + Nudity = ALWAYS "deepfake" (BLOCKED)
+2. AI + No Nudity = "ai_safe" (allowed with label)
+3. When uncertain about nudity in AI content, classify as "deepfake" for safety
 
 Respond in this exact JSON format:
 {
   "classification": "real" | "ai_safe" | "deepfake",
   "confidence": 0-100,
-  "explanation": "Multi-stage analysis: [AI indicators found or absent], [Risk assessment if AI detected], [Classification rationale].",
+  "explanation": "Multi-stage analysis: [AI indicators], [Nudity/explicit content check], [Risk assessment], [Classification rationale].",
   "artifacts": ["specific_indicators_found"],
   "riskLevel": "low" | "medium" | "high",
-  "uncertaintyFactors": ["factors that could affect accuracy"]
+  "uncertaintyFactors": ["factors that could affect accuracy"],
+  "nudityDetected": true | false
 }`;
 
     const response = await fetch(LOVABLE_AI_URL, {
