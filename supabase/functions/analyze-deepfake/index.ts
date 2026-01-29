@@ -101,56 +101,59 @@ Respond in this exact JSON format:
 
 CRITICAL: Base ALL decisions on VISUAL ANALYSIS ONLY. Do NOT use filenames, metadata, prompts, or any user-provided hints.
 
-=== STAGE 1: VISUAL FORENSIC ANALYSIS ===
-Examine pixel-level characteristics:
-- Texture consistency: Skin pores, fabric weave, surface details (AI often over-smooths or creates uniform textures)
-- Frequency artifacts: Unnatural periodicity, checkerboard patterns, high-frequency noise inconsistencies
-- Edge analysis: Blending seams around faces/objects, halo effects, abrupt transitions
-- Noise patterns: Inconsistent sensor noise, missing camera fingerprints, synthetic noise signatures
-- Lighting physics: Shadow direction consistency, reflection accuracy, ambient occlusion
-- Anatomical accuracy: Fingers, ears, teeth, eye symmetry, hair strand rendering
-- Background coherence: Warping, repetition, impossible geometry
-- Generative signatures: GAN artifacts (blob textures, watermark patterns), Diffusion artifacts (texture drift, oversaturation)
+=== STAGE 1: AI GENERATION DETECTION (BE AGGRESSIVE) ===
+Look for ANY of these AI indicators - even ONE is enough to classify as AI-generated:
+- SKIN: Unnaturally smooth, porcelain-like, or "airbrushed" skin lacking pores, wrinkles, or natural texture variation
+- LIGHTING: Too perfect, uniform, or "rendered" looking lighting without natural falloff
+- HAIR: Merged strands, blob-like sections, unnatural shine, or lack of individual strand detail
+- EYES: Too symmetrical, unnatural catchlights, or "glassy" appearance
+- BACKGROUND: Dreamlike, abstract, repetitive patterns, or suspiciously blurred/simplified
+- OVERALL AESTHETIC: "Too perfect," "hyper-polished," or "Instagram filter on steroids" appearance
+- STYLIZATION: Any painterly, illustrative, or artistic rendering of what claims to be a photo
+- TEXTURE UNIFORMITY: Same texture repeated across different materials (skin, clothes, background)
+- COLOR GRADING: Oversaturated or unnaturally vibrant colors typical of AI enhancement
+
+IMPORTANT: Modern AI images often look "better than real" - too perfect, too smooth, too polished. Real photos have imperfections, noise, and inconsistencies. If an image looks "too good" or "enhanced," it likely IS enhanced.
 
 === STAGE 2: IDENTITY & RISK ASSESSMENT ===
-If AI generation is detected OR uncertain, evaluate:
+If AI generation is detected OR even suspected:
 - Does the image depict an identifiable human face or body?
 - Could this be used for identity impersonation or catfishing?
-- Is there sexualized, violent, or defamatory context involving realistic human depictions?
-- Could viewers be misled about a real person's appearance or actions?
-- Is the subject depicted in a context they likely did not consent to?
+- Is there sexualized, violent, or defamatory context?
+- Could viewers be misled about a real person?
+- Is the subject in a potentially non-consensual context?
 
 === STAGE 3: CONSERVATIVE CLASSIFICATION ===
-Apply these rules STRICTLY:
+Apply these rules STRICTLY - err on the side of DETECTING AI:
 
-"real" - Authentic photograph. Reserve ONLY for content with:
-  - Natural camera sensor noise patterns
-  - Consistent lighting physics and accurate shadows
-  - Anatomically correct features with natural imperfections
-  - No detectable AI generation artifacts
-  - NOTE: Report as "Low Manipulation Risk" not "Verified Authentic" - certainty has limits
+"real" - ONLY for clearly authentic photographs with:
+  - Visible camera sensor noise and compression artifacts
+  - Natural skin imperfections (pores, blemishes, uneven texture)
+  - Imperfect lighting with natural shadows
+  - Slight blur, grain, or other photographic "flaws"
+  - DO NOT classify as "real" if the image looks "too perfect" or heavily edited
 
-"ai_safe" - AI-generated/enhanced BUT low risk:
-  - Artistic stylization clearly not attempting photorealism
-  - AI avatars or artistic portraits not resembling specific real individuals
-  - Enhanced photos where enhancements are cosmetic (filters, backgrounds)
-  - Creative content with no potential for identity confusion
+"ai_safe" - DEFAULT for any detected AI generation:
+  - Any smooth, polished, or "enhanced" appearance
+  - Stylized or artistic portraits
+  - Beauty filters or heavy enhancement
+  - Any uncertainty about whether content is AI-generated
+  - WHEN IN DOUBT, CLASSIFY HERE - better to label AI content than miss it
 
-"deepfake" - Potentially harmful content. Classify here if:
-  - Face swapping, morphing, or identity manipulation detected
-  - Photorealistic human depiction in misleading, sexualized, or defamatory context
-  - Content that could deceive viewers about identity or actions
-  - Realistic person placed in fabricated scenarios without clear artistic framing
-  - ANY uncertainty about potential identity harm (err on the side of caution)
+"deepfake" - For harmful AI content:
+  - Face swapping or identity manipulation
+  - Photorealistic AI in misleading/sexualized/defamatory context
+  - Content that could deceive about identity
+  - High uncertainty about potential identity harm
 
-CONSERVATIVE DEFAULT: When confidence is ambiguous (40-70%), classify as HIGHER RISK to protect potential victims.
+CRITICAL DEFAULT: When uncertain between "real" and "ai_safe", ALWAYS choose "ai_safe". Missing AI content is worse than over-labeling.
 
 Respond in this exact JSON format:
 {
   "classification": "real" | "ai_safe" | "deepfake",
   "confidence": 0-100,
-  "explanation": "Multi-stage analysis: [Visual forensic findings], [Identity/risk assessment if applicable], [Classification rationale]. Include uncertainty acknowledgment where relevant.",
-  "artifacts": ["specific_forensic_indicators_found"],
+  "explanation": "Multi-stage analysis: [AI indicators found or absent], [Risk assessment if AI detected], [Classification rationale].",
+  "artifacts": ["specific_indicators_found"],
   "riskLevel": "low" | "medium" | "high",
   "uncertaintyFactors": ["factors that could affect accuracy"]
 }`;
