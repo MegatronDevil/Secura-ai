@@ -9,6 +9,7 @@ import TryDemo from "./pages/TryDemo";
 import DigitalIdentity from "./pages/DigitalIdentity";
 import Dashboard from "./pages/Dashboard";
 import ImpersonationGuard from "./pages/ImpersonationGuard";
+import AdminReviewDashboard from "./pages/AdminReviewDashboard";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/digital-identity" element={<DigitalIdentity />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/impersonation-guard" element={<ImpersonationGuard />} />
+          <Route path="/admin/review" element={<AdminReviewDashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

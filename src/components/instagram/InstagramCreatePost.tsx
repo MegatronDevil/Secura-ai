@@ -10,7 +10,7 @@ interface InstagramCreatePostProps {
   username: string;
   isVerified: boolean;
   onBack: () => void;
-  onSuccess: (imageUrl?: string, caption?: string) => void;
+  onSuccess: (imageUrl?: string, caption?: string, isAISafe?: boolean) => void;
   onBlocked: (confidence: number, reason: string) => void;
 }
 
@@ -68,11 +68,13 @@ export default function InstagramCreatePost({
 
       if (error) throw error;
 
-      if (data.result === "FAKE") {
+      // Handle 3-tier classification
+      if (data.shouldBlock || data.result === "FAKE") {
         onBlocked(data.confidence, data.reason);
       } else {
-        // Pass the image preview and caption to show the post
-        onSuccess(imagePreview, caption);
+        // Pass the image preview, caption, and whether it's AI-safe
+        const isAISafe = data.result === "AI_SAFE" || data.classification === "ai_safe";
+        onSuccess(imagePreview, caption, isAISafe);
       }
     } catch (error) {
       console.error("Analysis error:", error);
