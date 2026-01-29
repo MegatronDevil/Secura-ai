@@ -84,9 +84,9 @@ export const ImageAnalysisResult = ({ result, showReportButton = true }: ImageAn
 
   const getLabel = () => {
     if (result.label) return result.label;
-    if (isDeepfake) return 'Deepfake Detected';
-    if (isAISafe) return 'AI Generated (Safe)';
-    return 'Authentic';
+    if (isDeepfake) return 'High-Risk Content Detected';
+    if (isAISafe) return 'AI-Generated Content';
+    return confidence >= 85 ? 'Low Manipulation Risk' : 'Likely Authentic';
   };
 
   const getRiskBadge = () => {
@@ -123,7 +123,7 @@ export const ImageAnalysisResult = ({ result, showReportButton = true }: ImageAn
                     {getLabel()}
                   </CardTitle>
                   <p className="text-sm text-muted-foreground">
-                    AI Forensic Analysis Complete
+                    Multi-Stage Forensic Analysis
                   </p>
                 </div>
               </div>

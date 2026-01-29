@@ -34,34 +34,34 @@ export function InstagramBlockedModal({ open, confidence, reason, onClose, analy
                 <AlertTriangle className="h-8 w-8 text-red-500" />
               </div>
             </motion.div>
-            <h2 className="text-xl font-semibold text-white">Upload blocked</h2>
+            <h2 className="text-xl font-semibold text-white">Upload Blocked - High Risk</h2>
           </div>
 
           {/* Content */}
           <div className="p-6 text-center space-y-4">
             <p className="text-gray-700">
-              We detected manipulated or impersonated content.
+              Our analysis detected indicators of potential identity manipulation or harmful synthetic content.
             </p>
             <p className="text-gray-500 text-sm">
-              This post goes against our authenticity guidelines.
+              This content may involve identity misuse, impersonation, or non-consensual synthetic media. Uploads of this nature are blocked to protect individuals from harm.
             </p>
 
             {/* Secura.AI Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full">
               <Shield className="h-4 w-4 text-primary" />
               <span className="text-sm text-gray-600">
-                Secura.AI blocked this upload
+                Secura.AI flagged elevated risk
               </span>
             </div>
 
             {/* Details */}
             <div className="bg-red-50 rounded-lg p-4 text-left space-y-2">
               <p className="text-sm">
-                <span className="font-semibold text-red-700">Confidence:</span>{" "}
-                <span className="text-red-600">{confidence}%</span>
+                <span className="font-semibold text-red-700">Risk Assessment:</span>{" "}
+                <span className="text-red-600">{confidence}% confidence in detection</span>
               </p>
               <p className="text-sm">
-                <span className="font-semibold text-red-700">Reason:</span>{" "}
+                <span className="font-semibold text-red-700">Analysis:</span>{" "}
                 <span className="text-red-600">{reason}</span>
               </p>
             </div>
@@ -127,7 +127,7 @@ export function InstagramSuccessModal({ open, onClose, isAISafe = false, analysi
               </div>
             </motion.div>
             <h2 className="text-xl font-semibold text-white">
-              {isAISafe ? 'Post shared with label' : 'Post shared'}
+              {isAISafe ? 'Post shared with AI label' : 'Post shared - Low Risk'}
             </h2>
           </div>
 
@@ -135,8 +135,8 @@ export function InstagramSuccessModal({ open, onClose, isAISafe = false, analysi
           <div className="p-6 text-center space-y-4">
             <p className="text-gray-700 text-lg">
               {isAISafe 
-                ? 'Your AI-generated content has been shared with an appropriate label.'
-                : 'Your post has been shared.'
+                ? 'Your AI-generated content has been shared with a transparency label.'
+                : 'Your post has been shared. No manipulation indicators detected.'
               }
             </p>
 
@@ -146,7 +146,7 @@ export function InstagramSuccessModal({ open, onClose, isAISafe = false, analysi
             }`}>
               <Shield className={`h-4 w-4 ${isAISafe ? 'text-amber-600' : 'text-green-600'}`} />
               <span className={`text-sm font-medium ${isAISafe ? 'text-amber-700' : 'text-green-700'}`}>
-                {isAISafe ? 'AI Content Labeled by Secura.AI' : 'Verified by Secura.AI'}
+                {isAISafe ? 'Labeled as AI Content' : 'Low Manipulation Risk'}
               </span>
             </div>
 
@@ -158,8 +158,8 @@ export function InstagramSuccessModal({ open, onClose, isAISafe = false, analysi
 
             <p className="text-xs text-gray-400">
               {isAISafe 
-                ? 'AI-generated content is allowed when properly labeled'
-                : 'Your content passed authenticity verification'
+                ? 'AI-generated content is permitted with transparency labeling'
+                : 'Analysis found low risk of manipulation. Note: no verification is absolute.'
               }
             </p>
 

@@ -42,38 +42,67 @@ serve(async (req) => {
 
     const mimeType = file.type || 'image/jpeg';
 
-    // Use Gemini Vision to analyze the image for impersonation
-    const analysisPrompt = `You are an expert forensic analyst specializing in detecting AI-generated content and potential impersonation attempts on social media platforms.
+    // Multi-stage forensic analysis for social media upload
+    const analysisPrompt = `You are an expert forensic analyst performing a MULTI-STAGE security analysis for social media content upload.
 
-Analyze this image that a user is attempting to upload to a social media platform. The user claims this represents themselves or their content.
+CRITICAL: Base ALL decisions on VISUAL ANALYSIS ONLY. Ignore filenames, metadata, or any claims about the content.
 
-Look for signs of:
-1. AI-generated faces (GAN/Diffusion artifacts, unnatural skin, asymmetries)
-2. Face swapping or morphing (edge discontinuities, lighting mismatches)
-3. Deepfake manipulation (unnatural expressions, warped backgrounds)
-4. Signs this might be someone else's photo being misused
-5. Inappropriate or harmful content
-6. Professional vs personal photo indicators
+=== STAGE 1: VISUAL FORENSIC ANALYSIS ===
+Analyze pixel-level characteristics:
+- Skin texture: Natural pores/imperfections vs. AI-smoothed surfaces
+- Lighting physics: Shadow consistency, reflection accuracy, ambient occlusion
+- Facial anatomy: Finger count, ear symmetry, teeth alignment, eye reflection
+- Edge quality: Blending around face/hair boundaries, halo artifacts
+- Background coherence: Warping, repetition, perspective errors
+- Noise patterns: Camera sensor noise vs. synthetic noise signatures
+- Generative artifacts: GAN checkerboarding, diffusion texture drift, watermarks
 
-Classify this upload into EXACTLY ONE of these categories:
-- "REAL": Authentic photo that appears safe for social media posting
-- "AI_SAFE": AI-generated content that is appropriate (AI avatars, art, clearly non-deceptive content)
-- "FAKE": Likely deepfake, face swap, or manipulated content that could be used for impersonation or deception
+=== STAGE 2: IDENTITY & SOCIAL RISK ASSESSMENT ===
+Evaluate potential for harm:
+- Could this be someone else's identity being misappropriated?
+- Is the subject depicted in potentially non-consensual context?
+- Could this content be used for catfishing, impersonation, or harassment?
+- Are there indicators of sexualized deepfake manipulation?
+- Could viewers be deceived about who is depicted or what they're doing?
+
+=== STAGE 3: CONSERVATIVE UPLOAD DECISION ===
+
+"REAL" - Allow upload. Reserve ONLY for:
+  - Natural photographic characteristics with no manipulation indicators
+  - Consistent lighting, authentic noise patterns, anatomical accuracy
+  - Low risk of identity misuse
+  - NOTE: Frame as "Low manipulation risk" not "Verified authentic"
+
+"AI_SAFE" - Allow with "AI-generated" label:
+  - Clearly stylized or artistic content
+  - AI avatars not closely resembling real individuals
+  - Creative/artistic content with no deceptive intent
+  - Enhanced photos where modifications are cosmetic only
+
+"FAKE" - BLOCK upload entirely:
+  - Face swapping, morphing, or identity manipulation detected
+  - Photorealistic content that could impersonate or defame someone
+  - Sexualized synthetic content depicting realistic humans
+  - High uncertainty about potential identity harm (err on safety)
+  - Content that could reasonably deceive viewers about identity
+
+CONSERVATIVE DEFAULT: When confidence is 40-70%, classify as higher risk to protect potential victims.
 
 Respond in this exact JSON format:
 {
   "result": "REAL" | "AI_SAFE" | "FAKE",
   "confidence": 0-100,
-  "reason": "Clear, user-friendly explanation of why this classification was made",
-  "artifacts": ["list", "of", "detected", "issues"],
+  "reason": "Multi-stage summary: [Forensic findings], [Risk assessment], [Decision rationale with uncertainty acknowledgment]",
+  "artifacts": ["specific_indicators_detected"],
   "shouldBlock": true | false,
-  "riskLevel": "low" | "medium" | "high"
+  "riskLevel": "low" | "medium" | "high",
+  "uncertaintyFactors": ["factors_affecting_confidence"]
 }
 
-IMPORTANT: 
-- shouldBlock should be TRUE only for "FAKE" content that could harm others
-- AI_SAFE content should NOT be blocked but should be labeled
-- Be accurate but err on the side of caution for potentially harmful content`;
+BLOCKING RULES:
+- shouldBlock = TRUE for "FAKE" (always block potential identity abuse)
+- shouldBlock = FALSE for "AI_SAFE" (allow with label)
+- shouldBlock = FALSE for "REAL" (allow normally)`;
 
     const response = await fetch(LOVABLE_AI_URL, {
       method: 'POST',
@@ -145,24 +174,35 @@ IMPORTANT:
       }
     } catch (parseError) {
       console.error('Failed to parse AI response:', parseError);
-      // Fallback to safe default (allow upload)
+      // CONSERVATIVE FALLBACK: When analysis fails, block to protect users
       analysisResult = {
-        result: 'REAL',
-        confidence: 50,
-        reason: 'Unable to analyze the image. Allowing upload with caution.',
-        artifacts: [],
+        result: 'AI_SAFE',
+        confidence: 40,
+        reason: 'Analysis encountered uncertainty. Content flagged for review. Unable to confirm authenticity with confidence - proceeding with AI-generated label for safety.',
+        artifacts: ['analysis_incomplete'],
         shouldBlock: false,
-        riskLevel: 'low'
+        riskLevel: 'medium',
+        uncertaintyFactors: ['parsing_error', 'incomplete_analysis']
       };
     }
+
+    // Generate risk-aware messaging (no absolute claims)
+    const getReason = (result: string, confidence: number, originalReason: string) => {
+      // Always include uncertainty acknowledgment for non-high-confidence results
+      if (confidence < 80 && !originalReason.includes('uncertain') && !originalReason.includes('may')) {
+        return `${originalReason} Note: Analysis confidence is moderate; some uncertainty remains in this assessment.`;
+      }
+      return originalReason;
+    };
 
     const result = {
       result: analysisResult.result,
       confidence: analysisResult.confidence,
-      reason: analysisResult.reason,
+      reason: getReason(analysisResult.result, analysisResult.confidence, analysisResult.reason),
       artifacts: analysisResult.artifacts || [],
       shouldBlock: analysisResult.shouldBlock || analysisResult.result === 'FAKE',
       riskLevel: analysisResult.riskLevel,
+      uncertaintyFactors: analysisResult.uncertaintyFactors || [],
       classification: analysisResult.result === 'REAL' 
         ? 'real' 
         : analysisResult.result === 'AI_SAFE' 
